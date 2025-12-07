@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.usermanage.usermanage.dao.EmployMapper" >
+  <resultMap id="BaseResultMap" type="com.usermanage.usermanage.bean.Employ" >
+    <id column="em_id" property="emId" jdbcType="INTEGER" />
+    <result column="em_name" property="emName" jdbcType="VARCHAR" />
+    <result column="em_phone" property="emPhone" jdbcType="VARCHAR" />
+    <result column="em_sex" property="emSex" jdbcType="VARCHAR" />
+    <result column="em_post" property="emPost" jdbcType="VARCHAR" />
+    <result column="em_address" property="emAddress" jdbcType="VARCHAR" />
+    <result column="dep_id" property="depId" jdbcType="INTEGER" />
+    <result column="em_state" property="emState" jdbcType="INTEGER" />
+    <result column="em_createtime" property="emCreatetime" jdbcType="TIMESTAMP" />
+    <result column="em_createuser" property="emCreateuser" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    em_id, em_name, em_phone, em_sex, em_post, em_address, dep_id, em_state, em_createtime, 
+    em_createuser
+  </sql>
+
+  <select id="login" resultMap="BaseResultMap" parameterType="string">
+    select em_phone from employ
+    <where>
+      em_phone = #{username}
+    </where>
+  </select>
+
+  <select id="selectall" resultMap="BaseResultMap" parameterType="string">
+    select * from employ
+    <where>
+      <if test="name!=null">
+        em_phone like concat('%',#{name},'%')
+      </if>
+    </where>
+    order by em_id
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from employ
+    where em_id = #{emId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from employ
+    where em_id = #{emId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.usermanage.usermanage.bean.Employ" >
+    insert into employ (em_id, em_name, em_phone, 
+      em_sex, em_post, em_address, 
+      dep_id, em_state, em_createtime, 
+      em_createuser)
+    values (#{emId,jdbcType=INTEGER}, #{emName,jdbcType=VARCHAR}, #{emPhone,jdbcType=VARCHAR}, 
+      #{emSex,jdbcType=VARCHAR}, #{emPost,jdbcType=VARCHAR}, #{emAddress,jdbcType=VARCHAR}, 
+      #{depId,jdbcType=INTEGER}, #{emState,jdbcType=INTEGER}, #{emCreatetime,jdbcType=TIMESTAMP}, 
+      #{emCreateuser,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyColumn="em_id" keyProperty="emId" parameterType="com.usermanage.usermanage.bean.Employ" >
+    insert into employ
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="emId != null" >
+        em_id,
+      </if>
+      <if test="emName != null" >
+        em_name,
+      </if>
+      <if test="emPhone != null" >
+        em_phone,
+      </if>
+      <if test="emSex != null" >
+        em_sex,
+      </if>
+      <if test="emPost != null" >
+        em_post,
+      </if>
+      <if test="emAddress != null" >
+        em_address,
+      </if>
+      <if test="depId != null" >
+        dep_id,
+      </if>
+      <if test="emState != null" >
+        em_state,
+      </if>
+      <if test="emCreatetime != null" >
+        em_createtime,
+      </if>
+      <if test="emCreateuser != null" >
+        em_createuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="emId != null" >
+        #{emId,jdbcType=INTEGER},
+      </if>
+      <if test="emName != null" >
+        #{emName,jdbcType=VARCHAR},
+      </if>
+      <if test="emPhone != null" >
+        #{emPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="emSex != null" >
+        #{emSex,jdbcType=VARCHAR},
+      </if>
+      <if test="emPost != null" >
+        #{emPost,jdbcType=VARCHAR},
+      </if>
+      <if test="emAddress != null" >
+        #{emAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        #{depId,jdbcType=INTEGER},
+      </if>
+      <if test="emState != null" >
+        #{emState,jdbcType=INTEGER},
+      </if>
+      <if test="emCreatetime != null" >
+        #{emCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="emCreateuser != null" >
+        #{emCreateuser,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.usermanage.usermanage.bean.Employ" >
+    update employ
+    <set >
+      <if test="emName != null" >
+        em_name = #{emName,jdbcType=VARCHAR},
+      </if>
+      <if test="emPhone != null" >
+        em_phone = #{emPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="emSex != null" >
+        em_sex = #{emSex,jdbcType=VARCHAR},
+      </if>
+      <if test="emPost != null" >
+        em_post = #{emPost,jdbcType=VARCHAR},
+      </if>
+      <if test="emAddress != null" >
+        em_address = #{emAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="depId != null" >
+        dep_id = #{depId,jdbcType=INTEGER},
+      </if>
+      <if test="emState != null" >
+        em_state = #{emState,jdbcType=INTEGER},
+      </if>
+      <if test="emCreatetime != null" >
+        em_createtime = #{emCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="emCreateuser != null" >
+        em_createuser = #{emCreateuser,jdbcType=INTEGER},
+      </if>
+    </set>
+    where em_id = #{emId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.usermanage.usermanage.bean.Employ" >
+    update employ
+    set em_name = #{emName,jdbcType=VARCHAR},
+      em_phone = #{emPhone,jdbcType=VARCHAR},
+      em_sex = #{emSex,jdbcType=VARCHAR},
+      em_post = #{emPost,jdbcType=VARCHAR},
+      em_address = #{emAddress,jdbcType=VARCHAR},
+      dep_id = #{depId,jdbcType=INTEGER},
+      em_state = #{emState,jdbcType=INTEGER},
+      em_createtime = #{emCreatetime,jdbcType=TIMESTAMP},
+      em_createuser = #{emCreateuser,jdbcType=INTEGER}
+    where em_id = #{emId,jdbcType=INTEGER}
+  </update>
+</mapper>

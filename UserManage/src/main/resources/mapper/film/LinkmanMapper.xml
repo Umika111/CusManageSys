@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.usermanage.usermanage.dao.LinkmanMapper" >
+  <resultMap id="BaseResultMap" type="com.usermanage.usermanage.bean.Linkman" >
+    <id column="linkman_id" property="linkmanId" jdbcType="INTEGER" />
+    <result column="linkman_name" property="linkmanName" jdbcType="VARCHAR" />
+    <result column="linkman_phone1" property="linkmanPhone1" jdbcType="VARCHAR" />
+    <result column="linkman_phone2" property="linkmanPhone2" jdbcType="VARCHAR" />
+    <result column="linkman_post" property="linkmanPost" jdbcType="VARCHAR" />
+    <result column="linkman_customerid" property="linkmanCustomerid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    linkman_id, linkman_name, linkman_phone1, linkman_phone2, linkman_post
+  </sql>
+
+  <select id="selectall" resultMap="BaseResultMap" parameterType="map">
+    select *from linkman
+    <where>
+      <if test="name!=null">
+       and linkman_name like concat('%',#{name},'%')
+      </if>
+      <if test="cid!=null">
+       and linkman_customerid =#{cid}
+      </if>
+    </where>
+    order by linkman_id
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from linkman
+    where linkman_id = #{linkmanId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from linkman
+    where linkman_id = #{linkmanId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.usermanage.usermanage.bean.Linkman" >
+    insert into linkman (linkman_id, linkman_name, linkman_phone1, 
+      linkman_phone2, linkman_post)
+    values (#{linkmanId,jdbcType=INTEGER}, #{linkmanName,jdbcType=VARCHAR}, #{linkmanPhone1,jdbcType=VARCHAR}, 
+      #{linkmanPhone2,jdbcType=VARCHAR}, #{linkmanPost,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyColumn="linkman_id" keyProperty="linkmanId" parameterType="com.usermanage.usermanage.bean.Linkman" >
+    insert into linkman
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="linkmanId != null" >
+        linkman_id,
+      </if>
+      <if test="linkmanName != null" >
+        linkman_name,
+      </if>
+      <if test="linkmanPhone1 != null" >
+        linkman_phone1,
+      </if>
+      <if test="linkmanPhone2 != null" >
+        linkman_phone2,
+      </if>
+      <if test="linkmanPost != null" >
+        linkman_post,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="linkmanId != null" >
+        #{linkmanId,jdbcType=INTEGER},
+      </if>
+      <if test="linkmanName != null" >
+        #{linkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone1 != null" >
+        #{linkmanPhone1,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone2 != null" >
+        #{linkmanPhone2,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPost != null" >
+        #{linkmanPost,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.usermanage.usermanage.bean.Linkman" >
+    update linkman
+    <set >
+      <if test="linkmanName != null" >
+        linkman_name = #{linkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone1 != null" >
+        linkman_phone1 = #{linkmanPhone1,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone2 != null" >
+        linkman_phone2 = #{linkmanPhone2,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPost != null" >
+        linkman_post = #{linkmanPost,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where linkman_id = #{linkmanId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.usermanage.usermanage.bean.Linkman" >
+    update linkman
+    set linkman_name = #{linkmanName,jdbcType=VARCHAR},
+      linkman_phone1 = #{linkmanPhone1,jdbcType=VARCHAR},
+      linkman_phone2 = #{linkmanPhone2,jdbcType=VARCHAR},
+      linkman_post = #{linkmanPost,jdbcType=VARCHAR}
+    where linkman_id = #{linkmanId,jdbcType=INTEGER}
+  </update>
+</mapper>

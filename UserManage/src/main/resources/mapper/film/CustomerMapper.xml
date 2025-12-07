@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.usermanage.usermanage.dao.CustomerMapper" >
+  <resultMap id="BaseResultMap" type="com.usermanage.usermanage.bean.Customer" >
+    <id column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="customer_address" property="customerAddress" jdbcType="VARCHAR" />
+    <result column="Ctype_id" property="ctypeId" jdbcType="INTEGER" />
+    <result column="customer_createtime" property="customerCreatetime" jdbcType="TIMESTAMP" />
+    <result column="customer_createuser" property="customerCreateuser" jdbcType="INTEGER" />
+    <result column="customer_updatetime" property="customerUpdatetime" jdbcType="TIMESTAMP" />
+    <result column="customer_updateuser" property="customerUpdateuser" jdbcType="INTEGER" />
+    <result column="customer_status" property="customerStatus" jdbcType="INTEGER" />
+    <result column="customer_taxid" property="customerTaxid" jdbcType="VARCHAR" />
+    <result column="linkman_id" property="linkmanId" jdbcType="INTEGER" />
+    <association property="type" javaType="com.usermanage.usermanage.bean.Customer_type" >
+      <id column="CType_id" property="ctypeId" jdbcType="INTEGER" />
+      <result column="Ctype_name" property="ctypeName" jdbcType="VARCHAR" />
+      <result column="Ctype_order" property="ctypeOrder" jdbcType="INTEGER" />
+    </association>
+    <association property="goods" javaType="com.usermanage.usermanage.bean.Goods" >
+      <id column="goods_id" property="goodsId" jdbcType="INTEGER" />
+      <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+      <result column="cate_id" property="cateId" jdbcType="INTEGER" />
+      <result column="goods_cover" property="goodsCover" jdbcType="VARCHAR" />
+      <result column="goods_price" property="goodsPrice" jdbcType="REAL" />
+      <result column="goods_createtime" property="goodsCreatetime" jdbcType="TIMESTAMP" />
+      <result column="goods_createuser" property="goodsCreateuser" jdbcType="INTEGER" />
+      <result column="goods_updatetime" property="goodsUpdatetime" jdbcType="TIMESTAMP" />
+      <result column="goods_updateuser" property="goodsUpdateuser" jdbcType="INTEGER" />
+      <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+    </association>
+    <collection property="linkman" ofType="com.usermanage.usermanage.bean.Linkman">
+      <id column="linkman_id" property="linkmanId" jdbcType="INTEGER" />
+      <result column="linkman_name" property="linkmanName" jdbcType="VARCHAR" />
+      <result column="linkman_phone1" property="linkmanPhone1" jdbcType="VARCHAR" />
+      <result column="linkman_phone2" property="linkmanPhone2" jdbcType="VARCHAR" />
+      <result column="linkman_post" property="linkmanPost" jdbcType="VARCHAR" />
+      <result column="linkman_customerid" property="linkmanCustomerid" jdbcType="INTEGER" />
+    </collection>
+    <collection property="buy" ofType="com.usermanage.usermanage.bean.buy">
+      <id column="buy_id" property="buyId" jdbcType="INTEGER" />
+      <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+      <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+      <result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+      <result column="buy_time" property="buyTime" jdbcType="TIMESTAMP" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    customer_id, customer_name, customer_address, Ctype_id, customer_createtime, customer_createuser, 
+    customer_updatetime, customer_updateuser, customer_status, customer_taxid, linkman_id
+  </sql>
+
+
+  <select id="selectall" resultMap="BaseResultMap" parameterType="string">
+    select customer.*, customer_type.Ctype_name
+    from customer  left join customer_type  on customer.Ctype_id = customer_type.CType_id
+    <where>
+      <if test="name!=null">
+        customer_name like concat('%',#{name},'%')
+      </if>
+    </where>
+    order by customer.Ctype_id,customer.customer_createtime desc
+  </select>
+<!--  <select id="selectall" resultMap="BaseResultMap" parameterType="string">-->
+<!--    select customer.*, customer_type.Ctype_name ,linkman.*,buy.*,goods.*-->
+<!--    from customer, customer_type, linkman, buy,goods-->
+<!--    where-->
+<!--    customer.Ctype_id = customer_type.CType_id-->
+<!--    and customer.customer_id = buy.customer_id-->
+<!--    and customer.linkman_id = linkman.linkman_id-->
+<!--    and buy.goods_id=goods.goods_id-->
+<!--    <where>-->
+<!--      <if test="name!=null">-->
+<!--        customer_name like concat('%',#{name},'%')-->
+<!--      </if>-->
+<!--    </where>-->
+<!--    order by customer.Ctype_id-->
+<!--  </select>-->
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from customer
+    where customer_id = #{customerId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from customer
+    where customer_id = #{customerId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.usermanage.usermanage.bean.Customer" >
+    insert into customer (customer_id, customer_name, customer_address, 
+      Ctype_id, customer_createtime, customer_createuser, 
+      customer_updatetime, customer_updateuser, 
+      customer_status, customer_taxid, linkman_id
+      )
+    values (#{customerId,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerAddress,jdbcType=VARCHAR}, 
+      #{ctypeId,jdbcType=INTEGER}, #{customerCreatetime,jdbcType=TIMESTAMP}, #{customerCreateuser,jdbcType=INTEGER}, 
+      #{customerUpdatetime,jdbcType=TIMESTAMP}, #{customerUpdateuser,jdbcType=INTEGER}, 
+      #{customerStatus,jdbcType=INTEGER}, #{customerTaxid,jdbcType=VARCHAR}, #{linkmanId,jdbcType=INTEGER}
+      )
+</insert>
+<insert id="insertSelective" useGeneratedKeys="true" keyColumn="customer_id" keyProperty="customerId"
+        parameterType="com.usermanage.usermanage.bean.Customer" >
+    insert into customer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="customerAddress != null" >
+        customer_address,
+      </if>
+      <if test="ctypeId != null" >
+        Ctype_id,
+      </if>
+      <if test="customerCreatetime != null" >
+        customer_createtime,
+      </if>
+      <if test="customerCreateuser != null" >
+        customer_createuser,
+      </if>
+      <if test="customerUpdatetime != null" >
+        customer_updatetime,
+      </if>
+      <if test="customerUpdateuser != null" >
+        customer_updateuser,
+      </if>
+      <if test="customerStatus != null" >
+        customer_status,
+      </if>
+      <if test="customerTaxid != null" >
+        customer_taxid,
+      </if>
+      <if test="linkmanId != null" >
+        linkman_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAddress != null" >
+        #{customerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ctypeId != null" >
+        #{ctypeId,jdbcType=INTEGER},
+      </if>
+      <if test="customerCreatetime != null" >
+        #{customerCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerCreateuser != null" >
+        #{customerCreateuser,jdbcType=INTEGER},
+      </if>
+      <if test="customerUpdatetime != null" >
+        #{customerUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerUpdateuser != null" >
+        #{customerUpdateuser,jdbcType=INTEGER},
+      </if>
+      <if test="customerStatus != null" >
+        #{customerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="customerTaxid != null" >
+        #{customerTaxid,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanId != null" >
+        #{linkmanId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.usermanage.usermanage.bean.Customer" >
+    update customer
+    <set >
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAddress != null" >
+        customer_address = #{customerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ctypeId != null" >
+        Ctype_id = #{ctypeId,jdbcType=INTEGER},
+      </if>
+      <if test="customerCreatetime != null" >
+        customer_createtime = #{customerCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerCreateuser != null" >
+        customer_createuser = #{customerCreateuser,jdbcType=INTEGER},
+      </if>
+      <if test="customerUpdatetime != null" >
+        customer_updatetime = #{customerUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerUpdateuser != null" >
+        customer_updateuser = #{customerUpdateuser,jdbcType=INTEGER},
+      </if>
+      <if test="customerStatus != null" >
+        customer_status = #{customerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="customerTaxid != null" >
+        customer_taxid = #{customerTaxid,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanId != null" >
+        linkman_id = #{linkmanId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where customer_id = #{customerId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.usermanage.usermanage.bean.Customer" >
+    update customer
+    set customer_name = #{customerName,jdbcType=VARCHAR},
+      customer_address = #{customerAddress,jdbcType=VARCHAR},
+      Ctype_id = #{ctypeId,jdbcType=INTEGER},
+      customer_createtime = #{customerCreatetime,jdbcType=TIMESTAMP},
+      customer_createuser = #{customerCreateuser,jdbcType=INTEGER},
+      customer_updatetime = #{customerUpdatetime,jdbcType=TIMESTAMP},
+      customer_updateuser = #{customerUpdateuser,jdbcType=INTEGER},
+      customer_status = #{customerStatus,jdbcType=INTEGER},
+      customer_taxid = #{customerTaxid,jdbcType=VARCHAR},
+      linkman_id = #{linkmanId,jdbcType=INTEGER}
+    where customer_id = #{customerId,jdbcType=INTEGER}
+  </update>
+</mapper>

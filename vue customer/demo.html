@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue cdn</title>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="message">
+        <br>
+        {{message}}
+        <button @click="test">事件</button>
+        <ul>
+            <li v-for="item in news">
+                <a :href="item.url">{{item.title}}</a>
+            </li>
+        </ul>
+        <mybutton></mybutton>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        //模块化 my-button
+        Vue.component('mybutton',{
+            template:`<div>
+                <h3>按钮X</h3>
+                <button>测试按钮</button>
+                </div>`
+        })
+        var app=new Vue({
+            el:'#app',
+            data:{
+                message:'hello world',
+                num1:10,
+                num2:200,
+                news:[
+                    {title:'新闻1',url:'http://www.baidu.com'},
+                    {title:'新闻2',url:'http://www.sina.com'},
+                    {title:'新闻3',url:'http://www.biying.com'},
+                    {title:'新闻4',url:'http://www.biying.com'},
+                ]
+            },
+            methods:{
+                test(){
+                    this.message="welcome"
+                }
+            }
+        })
+    </script>
+</body>
+</html>

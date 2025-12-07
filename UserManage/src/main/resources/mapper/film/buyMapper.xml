@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.usermanage.usermanage.dao.buyMapper" >
+  <resultMap id="BaseResultMap" type="com.usermanage.usermanage.bean.buy" >
+    <id column="buy_id" property="buyId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+    <result column="buy_time" property="buyTime" jdbcType="TIMESTAMP" />
+    <association property="goods" javaType="com.usermanage.usermanage.bean.Goods" >
+      <id column="goods_id" property="goodsId" jdbcType="INTEGER" />
+      <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    </association>
+    <association property="customer" javaType="com.usermanage.usermanage.bean.Customer" >
+      <id column="customer_id" property="customerId" jdbcType="INTEGER" />
+      <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    buy_id, goods_id, customer_id, buy_num, buy_time
+  </sql>
+
+  <select id="selectall" resultMap="BaseResultMap" parameterType="String">
+    SELECT buy.buy_id,customer.customer_name,goods_name,buy_num,buy_time
+    FROM buy,customer,goods
+--     select * from buy
+    <where>
+      <if test="bid!=null">
+        buy_id = #{bid}
+      </if>
+      <if test="gid!=null">
+        and buy.goods_id =#{gid}
+      </if>
+      <if test="cid!=null">
+        and buy.customer_id =#{cid}
+      </if>
+    and buy.goods_id=goods.goods_id and buy.customer_id=customer.customer_id
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from buy
+    where buy_id = #{buyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from buy
+    where buy_id = #{buyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.usermanage.usermanage.bean.buy" >
+    insert into buy (buy_id, goods_id, customer_id, 
+      buy_num, buy_time)
+    values (#{buyId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{customerId,jdbcType=INTEGER}, 
+      #{buyNum,jdbcType=INTEGER}, #{buyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyColumn="buy_id" keyProperty="buyId" parameterType="com.usermanage.usermanage.bean.buy" >
+    insert into buy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="buyId != null" >
+        buy_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="buyNum != null" >
+        buy_num,
+      </if>
+      <if test="buyTime != null" >
+        buy_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="buyId != null" >
+        #{buyId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="buyNum != null" >
+        #{buyNum,jdbcType=INTEGER},
+      </if>
+      <if test="buyTime != null" >
+        #{buyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.usermanage.usermanage.bean.buy" >
+    update buy
+    <set >
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="buyNum != null" >
+        buy_num = #{buyNum,jdbcType=INTEGER},
+      </if>
+      <if test="buyTime != null" >
+        buy_time = #{buyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where buy_id = #{buyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.usermanage.usermanage.bean.buy" >
+    update buy
+    set goods_id = #{goodsId,jdbcType=INTEGER},
+      customer_id = #{customerId,jdbcType=INTEGER},
+      buy_num = #{buyNum,jdbcType=INTEGER},
+      buy_time = #{buyTime,jdbcType=TIMESTAMP}
+    where buy_id = #{buyId,jdbcType=INTEGER}
+  </update>
+</mapper>
